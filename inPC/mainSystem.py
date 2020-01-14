@@ -19,9 +19,9 @@ position_y = 139.794851
 start_x = position_x
 start_y = position_y
 
-filename = datetime.datetime.now()
+filename = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
 df_log = pd.DataFrame(columns=['time','position_x','position_y','Goal_x','Goal_y','distance','azimuth','direction'])
-df_log = df_log.append(pd.Series([datetime.datetime.now(),position_x,position_y,Goal_x,Goal_y,0,0,''], index=df_log.columns), ignore_index=True)
+df_log = df_log.append(pd.Series([datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),position_x,position_y,Goal_x,Goal_y,0,0,''], index=df_log.columns), ignore_index=True)
 advance_coff = 1
 count = 0
 direction = ''
@@ -68,7 +68,7 @@ while True:
         break
     
     # ログ用 pandasDataFrame
-    tmp = pd.Series([datetime.datetime.now(),position_x,position_y,Goal_x,Goal_y,distance,azimuth,direction], index = df_log.columns)
+    tmp = pd.Series([datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),position_x,position_y,Goal_x,Goal_y,distance,azimuth,direction], index = df_log.columns)
     socket_send_data = tmp.to_json()
     df_log = df_log.append(tmp, ignore_index = True)
     

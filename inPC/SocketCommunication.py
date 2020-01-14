@@ -32,8 +32,11 @@ class SocketCommunication:
         recv_data = self.s.recv(1024)
         recv_data = recv_data.decode()
         send_data = data
-        self.s.send(send_data.encode())
-
+        try:
+            self.s.send(send_data.encode())
+        except socket.error:
+            print("connection lost, try reconnect")
+            # socket_client_up(self)
         return recv_data
 
     def socket_com_server(self, data):
