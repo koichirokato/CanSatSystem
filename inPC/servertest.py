@@ -1,6 +1,7 @@
 import SocketCommunication
 import json
 import datetime
+import time
 
 socket = SocketCommunication.SocketCommunication("localhost", 8000)
 
