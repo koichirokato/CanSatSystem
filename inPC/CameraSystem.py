@@ -16,6 +16,15 @@ def find_rect_of_target_color(image):
         rects.append(np.array(rect))
     return rects
 
+def camera_system():
+    capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    # while cv2.waitKey(30) < 0:
+    _, frame = capture.read()
+    rects = find_rect_of_target_color(frame)
+    capture.release()
+    cv2.destroyAllWindows()
+    return rects
+
 if __name__ == "__main__":
     capture = cv2.VideoCapture(0)
     while cv2.waitKey(30) < 0:
