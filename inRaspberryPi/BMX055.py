@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import smbus
 import time
 
@@ -116,4 +119,4 @@ while True:
     print "Magnetic field in X-Axis : %d" %xMag
     print "Magnetic field in Y-Axis : %d" %yMag
     print "Magnetic field in Z-Axis : %d" %zMag
-    time.sleep(0.5)
+    time.sleep(0.2)
