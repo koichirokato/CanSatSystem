@@ -3,7 +3,7 @@
 
 import smbus
 import time
-
+import math
 # Get I2C bus
 bus = smbus.SMBus(1)
 
@@ -60,10 +60,7 @@ bus.write_byte_data(0x13, 0x52, 0x16)
 
 time.sleep(0.5)
 
-
-
-# Output data to screen
-while True:
+def getBMXdata():
     # BMX055 Accl address, 0x19(24)
     # Read data back from 0x02(02), 6 bytes
     # xAccl LSB, xAccl MSB, yAccl LSB, yAccl MSB, zAccl LSB, zAccl MSB
@@ -110,13 +107,22 @@ while True:
     if zMag > 16383 :
         zMag -= 32768
 
-    print "Acceleration in X-Axis : %d" %xAccl
-    print "Acceleration in Y-Axis : %d" %yAccl
-    print "Acceleration in Z-Axis : %d" %zAccl
-    print "X-Axis of Rotation : %d" %xGyro
-    print "Y-Axis of Rotation : %d" %yGyro
-    print "Z-Axis of Rotation : %d" %zGyro
-    print "Magnetic field in X-Axis : %d" %xMag
-    print "Magnetic field in Y-Axis : %d" %yMag
-    print "Magnetic field in Z-Axis : %d" %zMag
+    # print "Acceleration in X-Axis : %d" %xAccl
+    # print "Acceleration in Y-Axis : %d" %yAccl
+    # print "Acceleration in Z-Axis : %d" %zAccl
+    # print "X-Axis of Rotation : %d" %xGyro
+    # print "Y-Axis of Rotation : %d" %yGyro
+    # print "Z-Axis of Rotation : %d" %zGyro
+    # print "Magnetic field in X-Axis : %d" %xMag
+    # print "Magnetic field in Y-Axis : %d" %yMag
+    # print "Magnetic field in Z-Axis : %d" %zMag
     time.sleep(0.2)
+
+    print(90-math.degrees(math.atan2(yMag,xMag)))
+    cansat_turning = 90-math.degrees(math.atan2(yMag,xMag))
+    return cansat_turning
+
+if __name__ == '__main__':
+    # Output data to screen
+    while True:
+        getBMXdata()
