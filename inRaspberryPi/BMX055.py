@@ -119,10 +119,12 @@ def getBMXdata():
     print "Magnetic field in Y-Axis : %d" %yMag
     print "Magnetic field in Z-Axis : %d" %zMag
     
-    print(90-math.degrees(math.atan2(yMag,xMag)))
+    print 90-math.degrees(math.atan2(yMag,xMag))
     cansat_turning = 90-math.degrees(math.atan2(yMag,xMag))
     return cansat_turning
 
+def BMXget():
+    print a
 if __name__ == '__main__':
     # Output data to screen
     # bus.write_byte_data(0x13, 0x4B, 0x83)
