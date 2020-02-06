@@ -9,6 +9,8 @@ PCでPythonのテストコードを書いてラズパイに移そうとしてい
      - json, socket, pandas, numpy, openCV, datetime, time
 
  - RaspberryPi
+   - Rasbian buster
+   - Python 2.7.2
 
 ## ディレクトリ
  - [inPC](https://github.com/koichirokato/CanSatSystem/tree/master/inPC):PC上でのテスト環境(センサ類の送受信なしver)  

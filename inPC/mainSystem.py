@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import random
 import datetime
-import CameraSystem
+# import CameraSystem
 import SocketCommunication
 from GPSCalculation import vincenty_inverse
 from CameraSystem import camera_system
