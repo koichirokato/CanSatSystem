@@ -10,7 +10,7 @@ import datetime
 # import CameraSystem
 import SocketCommunication
 from GPSCalculation import vincenty_inverse
-from BMX055 import getBMXdata
+from BMX055 import getBMXMag
 import serial
 import micropyGPS
 import threading
@@ -78,12 +78,12 @@ if __name__ == '__main__':
             count += 1
 
             # GPSから取得した値をもとにposition_x,yを更新
-            diff_x = Goal_x - position_x
-            diff_y = Goal_y - position_y
-                
             position_x = gps.latitude[0]
             position_y = gps.longitude[0]
 
+            diff_x = Goal_x - position_x
+            diff_y = Goal_y - position_y
+            
             # 緯度経度の計算
             result = vincenty_inverse(position_x, position_y, Goal_x, Goal_y, 1)
 
@@ -92,7 +92,7 @@ if __name__ == '__main__':
             distance = result['distance']
             azimuth  = result['azimuth1']
 
-            direction = getBMXdata()
+            direction = getBMXMag()
             azimuth_check()
 
             advance_coff = distance * 0.01

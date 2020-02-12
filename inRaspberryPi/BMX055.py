@@ -60,6 +60,31 @@ bus.write_byte_data(0x13, 0x52, 0x16)
 
 time.sleep(0.5)
 
+def initAcclData():
+    for i in range(1000):
+        # BMX055 Accl address, 0x19(24)
+        # Read data back from 0x02(02), 6 bytes
+        # xAccl LSB, xAccl MSB, yAccl LSB, yAccl MSB, zAccl LSB, zAccl MSB
+        data = bus.read_i2c_block_data(0x19, 0x02, 6)
+        # Convert the data to 12-bits
+        xAccl = ((data[1] * 256) + (data[0] & 0xF0)) / 16
+        if xAccl > 2047 :
+            xAccl -= 4096
+        yAccl = ((data[3] * 256) + (data[2] & 0xF0)) / 16
+        if yAccl > 2047 :
+            yAccl -= 4096
+        zAccl = ((data[5] * 256) + (data[4] & 0xF0)) / 16
+        if zAccl > 2047 :
+            zAccl -= 4096
+
+        X += xAccl
+        y += yAccl
+        z += zAccl
+    
+    offsetxAccl = -1 * x / 1000
+    offsetyAccl = -1 * y / 1000
+    offsetzAccl = -1 * z / 1000
+
 def getBMXdata():
     # BMX055 Accl address, 0x19(24)
     # Read data back from 0x02(02), 6 bytes
@@ -76,6 +101,7 @@ def getBMXdata():
     if zAccl > 2047 :
         zAccl -= 4096
 
+    
     # BMX055 Gyro address, 0x69(104)
     # Read data back from 0x02(02), 6 bytes
     # xGyro LSB, xGyro MSB, yGyro LSB, yGyro MSB, zGyro LSB, zGyro MSB
@@ -123,11 +149,32 @@ def getBMXdata():
     cansat_turning = 90-math.degrees(math.atan2(yMag,xMag))
     return cansat_turning
 
-def BMXget():
-    print a
+def getBMXMag():
+    # BMX055 Mag address, 0x13(16)
+    # Read data back from 0x42(66), 6 bytes
+    # X-Axis LSB, X-Axis MSB, Y-Axis LSB, Y-Axis MSB, Z-Axis LSB, Z-Axis MSB
+    data = bus.read_i2c_block_data(0x13, 0x42, 6)
+
+    # Convert the data
+    xMag = ((data[1] * 256) + (data[0] & 0xF8)) / 8
+    if xMag > 4095 :
+        xMag -= 8192
+    yMag = ((data[3] * 256) + (data[2] & 0xF8)) / 8
+    if yMag > 4095 :
+        yMag -= 8192
+    zMag = ((data[5] * 256) + (data[4] & 0xFE)) / 2
+    if zMag > 16383 :
+        zMag -= 32768
+
+    time.sleep(0.2)
+
+    print 90-math.degrees(math.atan2(yMag,xMag))
+    cansat_turning = 90-math.degrees(math.atan2(yMag,xMag))
+    return cansat_turning
+
 if __name__ == '__main__':
     # Output data to screen
     # bus.write_byte_data(0x13, 0x4B, 0x83)
-    bus.write_byte_data(0x13, 0x4C, 0x00)
+    # bus.write_byte_data(0x13, 0x4C, 0x00)
     while True:
         getBMXdata()
