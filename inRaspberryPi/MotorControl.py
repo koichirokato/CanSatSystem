@@ -20,7 +20,7 @@ GPIO.setup(15, GPIO.OUT)    # BIN1
 GPIO.setup(13, GPIO.OUT)    # BIN2
 GPIO.setup(11, GPIO.OUT)    # PWMB
 
-pwma = GPIO.PWM(12, pwmFreq)    # pin 18 to PWM  
+pwma = GPIO.PWM(12, pwmFreq)    # pin 18 to PWM
 pwmb = GPIO.PWM(11, pwmFreq)    # pin 13 to PWM
 pwma.start(100)
 pwmb.start(100)
