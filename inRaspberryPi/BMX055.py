@@ -74,6 +74,7 @@ def initializeBMX055():
 offsetxAccl,offsetyAccl,offsetzAccl = 0,0,0
 
 def initAcclData():
+    # calibration use 1000times average
     print('initialize start')
     x,y,z=0,0,0
     for i in range(1000):

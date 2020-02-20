@@ -60,7 +60,7 @@ def camera_mode():
         red_point        = max(red_points, key=(lambda x: x[2] * x[3]))
         red_point_center = np.array(red_point[0:2] + (red_point[2:4])/2, dtype=int)
         red_point_center = np.round(red_point_center)
-        print('red_point : ' + str(red_point_center))
+        print 'red_point : ' + str(red_point_center)
 
 def direction_check(azimuth):
     if   azimuth < 45:  direction = 'north'
@@ -95,22 +95,23 @@ def update_location():
 
     return result, direction
 
-# def motor(name, spd, sleeptime=1):
-#     if name == 'f': forward(spd)
-#     if name == 'b': reverse(spd)
-#     if name == 'r': turnRight(spd)
-#     if name == 'l': turnLeft(spd)
-#     time.sleep(sleeptime)
-#     motorStop()
-#     time.sleep(1)
+def motor(name, spd, sleeptime=1):
+    if name == 'f': forward(spd)
+    if name == 'b': reverse(spd)
+    if name == 'r': turnRight(spd)
+    if name == 'l': turnLeft(spd)
+    time.sleep(sleeptime)
+    motorStop()
+    time.sleep(1)
 
 if __name__ == '__main__':
     print "start at : " + str(datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
+    
     print "initialize Accl Data"
     initializeBMX055()
     offset = initAcclData()
     time.sleep(1)
-    print(offset)
+    print offset
     while True:
         getAcclData(offset[0],offset[1],offset[2])
         getBMXdata()
@@ -120,11 +121,14 @@ if __name__ == '__main__':
     getGPS()
     
     while True:
+        # 加速度を取得、パラシュートの切り離しに使う
         acclData = getAcclData(offset[0],offset[1],offset[2])
-        print acclData
+        
+
         print "######count : " + str(count)
         count += 1
         print gps.clean_sentences
+        # GPSのデータがある程度たまったら
         if gps.clean_sentences > 20:
             # motor('f',10,1)
             # motor('b',10,1)
@@ -132,9 +136,12 @@ if __name__ == '__main__':
             distance = result['distance']
             azimuth  = result['azimuth1']
             
+            # direction と azimuth で向きを計算、旋回
+
+            # カメラ
             if result['distance'] < 5:
-                print("count : "+ str(count))
-                print("Camera mode")
+                print "count : "+ str(count)
+                print "Camera mode"
                 camera_mode()
                 break
             if count > 10000:
