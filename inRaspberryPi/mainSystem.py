@@ -10,8 +10,7 @@ import datetime
 # import CameraSystem
 import SocketCommunication
 from GPSCalculation import vincenty_inverse
-from BMX055 import getBMXMag
-from BMX055 import getAcclData
+from BMX055 import getBMXMag, initAcclData, getAcclData, initializeBMX055
 from MotorControl import forward, reverse, turnLeft, turnRight, motorStop
 import serial
 import micropyGPS
@@ -89,26 +88,47 @@ def update_location():
 
     direction = getBMXMag()
     directionGoal   = direction_check(azimuth)
-    directionCanSat = direction_check(dirction)
+    directionCanSat = direction_check(direction)
 
     advance_coff = distance * 0.01
     if advance_coff>1: advance_coff = 1
 
-    return result
+    return result, direction
 
+# def motor(name, spd, sleeptime=1):
+#     if name == 'f': forward(spd)
+#     if name == 'b': reverse(spd)
+#     if name == 'r': turnRight(spd)
+#     if name == 'l': turnLeft(spd)
+#     time.sleep(sleeptime)
+#     motorStop()
+#     time.sleep(1)
 
 if __name__ == '__main__':
     print "start at : " + str(datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
-    getGPS()
+    print "initialize Accl Data"
+    initializeBMX055()
+    offset = initAcclData()
+    time.sleep(1)
+    print(offset)
     while True:
-        count += 1
-        reverse(10)
-        time.sleep(1)
-        motorStop()
-        time.sleep(.25)
+        getAcclData(offset[0],offset[1],offset[2])
+        getBMXdata()
+        time.sleep(0.2)
 
+    print "start GPS scan"
+    getGPS()
+    
+    while True:
+        acclData = getAcclData(offset[0],offset[1],offset[2])
+        print acclData
+        print "######count : " + str(count)
+        count += 1
+        print gps.clean_sentences
         if gps.clean_sentences > 20:
-            result = update_location()
+            # motor('f',10,1)
+            # motor('b',10,1)
+            result, direction = update_location()
             distance = result['distance']
             azimuth  = result['azimuth1']
             
