@@ -11,6 +11,8 @@ import datetime
 import SocketCommunication
 from GPSCalculation import vincenty_inverse
 from BMX055 import getBMXMag
+from BMX055 import getAcclData
+from MotorControl import forward, reverse, turnLeft, turnRight, motorStop
 import serial
 import micropyGPS
 import threading
@@ -61,7 +63,7 @@ def camera_mode():
         red_point_center = np.round(red_point_center)
         print('red_point : ' + str(red_point_center))
 
-def azimuth_check():
+def direction_check(azimuth):
     if   azimuth < 45:  direction = 'north'
     elif azimuth < 135: direction = 'east'
     elif azimuth < 225: direction = 'south'
@@ -69,34 +71,47 @@ def azimuth_check():
     elif azimuth < 360: direction = 'north'
     else: direction = 'error'
 
+def update_location():
+    # GPSから取得した値をもとにposition_x,yを更新
+    position_x = gps.latitude[0]
+    position_y = gps.longitude[0]
+
+    diff_x = Goal_x - position_x
+    diff_y = Goal_y - position_y
+    
+    # 緯度経度の計算
+    result = vincenty_inverse(position_x, position_y, Goal_x, Goal_y, 1)
+
+    # 距離ごとに前進する時間を変える advance_coff
+    # 角度によって旋回する向きと量を変える
+    distance = result['distance']
+    azimuth  = result['azimuth1']
+
+    direction = getBMXMag()
+    directionGoal   = direction_check(azimuth)
+    directionCanSat = direction_check(dirction)
+
+    advance_coff = distance * 0.01
+    if advance_coff>1: advance_coff = 1
+
+    return result
+
+
 if __name__ == '__main__':
-    print("start at : " + str(datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")))
+    print "start at : " + str(datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
     getGPS()
     while True:
-        print gps.clean_sentences
+        count += 1
+        reverse(10)
+        time.sleep(1)
+        motorStop()
+        time.sleep(.25)
+
         if gps.clean_sentences > 20:
-            count += 1
-
-            # GPSから取得した値をもとにposition_x,yを更新
-            position_x = gps.latitude[0]
-            position_y = gps.longitude[0]
-
-            diff_x = Goal_x - position_x
-            diff_y = Goal_y - position_y
-            
-            # 緯度経度の計算
-            result = vincenty_inverse(position_x, position_y, Goal_x, Goal_y, 1)
-
-            # 距離ごとに前進する時間を変える advance_coff
-            # 角度によって旋回する向きと量を変える
+            result = update_location()
             distance = result['distance']
             azimuth  = result['azimuth1']
-
-            direction = getBMXMag()
-            azimuth_check()
-
-            advance_coff = distance * 0.01
-            if advance_coff>1: advance_coff = 1
+            
             if result['distance'] < 5:
                 print("count : "+ str(count))
                 print("Camera mode")
@@ -109,7 +124,7 @@ if __name__ == '__main__':
             # ログ用 pandasDataFrame
             tmp = pd.Series([datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),position_x,position_y,Goal_x,Goal_y,distance,azimuth,direction], index = df_log.columns)
             socket_send_data = tmp.to_json()
-            print(tmp)
+            print tmp
             df_log = df_log.append(tmp, ignore_index = True)
             
             df_log.to_csv('CanSat_log/log.csv')
