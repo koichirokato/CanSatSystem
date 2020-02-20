@@ -4,61 +4,72 @@
 import smbus
 import time
 import math
+
 # Get I2C bus
 bus = smbus.SMBus(1)
 
-# BMX055 Accl address, 0x19
-# Select PMU_Range register, 0x0F(15)
-#       0x03(03)    Range = +/- 2g
-bus.write_byte_data(0x19, 0x0F, 0x03)
-# BMX055 Accl address, 0x19
-# Select PMU_BW register, 0x10(16)
-#       0x08(08)    Bandwidth = 7.81 Hz
-bus.write_byte_data(0x19, 0x10, 0x08)
-# BMX055 Accl address, 0x19
-# Select PMU_LPW register, 0x11(17)
-#       0x00(00)    Normal mode, Sleep duration = 0.5ms
-bus.write_byte_data(0x19, 0x11, 0x00)
+def initializeBMX055():
+    # BMX055 Accl address, 0x19
+    # Select PMU_Range register, 0x0F(15)
+    #       0x03(03)    Range = +/- 2g
+    try:
+        bus.write_byte_data(0x19, 0x0F, 0x03)
+    except:
+        pass
+    # BMX055 Accl address, 0x19
+    # Select PMU_BW register, 0x10(16)
+    #       0x08(08)    Bandwidth = 7.81 Hz
+    bus.write_byte_data(0x19, 0x10, 0x08)
+    # BMX055 Accl address, 0x19
+    # Select PMU_LPW register, 0x11(17)
+    #       0x00(00)    Normal mode, Sleep duration = 0.5ms
+    bus.write_byte_data(0x19, 0x11, 0x00)
 
-time.sleep(0.5)
+    time.sleep(0.5)
 
-# BMX055 Gyro address, 0x69
-# Select Range register, 0x0F(15)
-#       0x04(04)    Full scale = +/- 125 degree/s
-bus.write_byte_data(0x69, 0x0F, 0x04)
-# BMX055 Gyro address, 0x69
-# Select Bandwidth register, 0x10(16)
-#       0x07(07)    ODR = 100 Hz
-bus.write_byte_data(0x69, 0x10, 0x07)
-# BMX055 Gyro address, 0x69
-# Select LPM1 register, 0x11(17)
-#       0x00(00)    Normal mode, Sleep duration = 2ms
-bus.write_byte_data(0x69, 0x11, 0x00)
+    # BMX055 Gyro address, 0x69
+    # Select Range register, 0x0F(15)
+    #       0x04(04)    Full scale = +/- 125 degree/s
+    try:
+        bus.write_byte_data(0x69, 0x0F, 0x04)
+    except:
+        pass
+    # BMX055 Gyro address, 0x69
+    # Select Bandwidth register, 0x10(16)
+    #       0x07(07)    ODR = 100 Hz
+    bus.write_byte_data(0x69, 0x10, 0x07)
+    # BMX055 Gyro address, 0x69
+    # Select LPM1 register, 0x11(17)
+    #       0x00(00)    Normal mode, Sleep duration = 2ms
+    bus.write_byte_data(0x69, 0x11, 0x00)
 
-time.sleep(0.5)
+    time.sleep(0.5)
 
-# BMX055 Mag address, 0x13
-# Select Mag register, 0x4B(75)
-#       0x83(121)   Soft reset
-# bus.write_byte_data(0x13, 0x4B, 0x83)
-# BMX055 Mag address, 0x13
-# Select Mag register, 0x4C(76)
-#       0x00(00)    Normal Mode, ODR = 10 Hz
-bus.write_byte_data(0x13, 0x4C, 0x00)
-# BMX055 Mag address, 0x13
-# Select Mag register, 0x4E(78)
-#       0x84(122)   X, Y, Z-Axis enabled
-bus.write_byte_data(0x13, 0x4E, 0x84)
-# BMX055 Mag address, 0x13
-# Select Mag register, 0x51(81)
-#       0x04(04)    No. of Repetitions for X-Y Axis = 9
-bus.write_byte_data(0x13, 0x51, 0x04)
-# BMX055 Mag address, 0x13
-# Select Mag register, 0x52(82)
-#       0x0F(15)    No. of Repetitions for Z-Axis = 15
-bus.write_byte_data(0x13, 0x52, 0x16)
+    # BMX055 Mag address, 0x13
+    # Select Mag register, 0x4B(75)
+    #       0x83(121)   Soft reset
+    try:
+        bus.write_byte_data(0x13, 0x4B, 0x83)
+    except:
+        pass
+    # BMX055 Mag address, 0x13
+    # Select Mag register, 0x4C(76)
+    #       0x00(00)    Normal Mode, ODR = 10 Hz
+    bus.write_byte_data(0x13, 0x4C, 0x00)
+    # BMX055 Mag address, 0x13
+    # Select Mag register, 0x4E(78)
+    #       0x84(122)   X, Y, Z-Axis enabled
+    bus.write_byte_data(0x13, 0x4E, 0x84)
+    # BMX055 Mag address, 0x13
+    # Select Mag register, 0x51(81)
+    #       0x04(04)    No. of Repetitions for X-Y Axis = 9
+    bus.write_byte_data(0x13, 0x51, 0x04)
+    # BMX055 Mag address, 0x13
+    # Select Mag register, 0x52(82)
+    #       0x0F(15)    No. of Repetitions for Z-Axis = 15
+    bus.write_byte_data(0x13, 0x52, 0x0F)
 
-time.sleep(0.5)
+    time.sleep(0.5)
 
 offsetxAccl,offsetyAccl,offsetzAccl = 0,0,0
 
@@ -69,7 +80,11 @@ def initAcclData():
         # BMX055 Accl address, 0x19(24)
         # Read data back from 0x02(02), 6 bytes
         # xAccl LSB, xAccl MSB, yAccl LSB, yAccl MSB, zAccl LSB, zAccl MSB
-        data = bus.read_i2c_block_data(0x19, 0x02, 6)
+        try:
+            data = bus.read_i2c_block_data(0x19, 0x02, 6)
+        except:
+            initializeBMX055()
+            data = bus.read_i2c_block_data(0x19, 0x02, 6)
         # Convert the data to 12-bits
         xAccl = ((data[1] * 256) + (data[0] & 0xF0)) / 16
         if xAccl > 2047 :
@@ -113,7 +128,6 @@ def getAcclData(offsetxAccl, offsetyAccl, offsetzAccl):
     yAccl += offsetyAccl
     zAccl += offsetzAccl
 
-    print(xAccl,yAccl,zAccl)
     return xAccl,yAccl,zAccl
 
 def getBMXdata():
@@ -206,10 +220,11 @@ if __name__ == '__main__':
     # Output data to screen
     # bus.write_byte_data(0x13, 0x4B, 0x83)
     # bus.write_byte_data(0x13, 0x4C, 0x00)
+    initializeBMX055()
     offset = initAcclData()
     time.sleep(1)
     print(offset)
     while True:
         getAcclData(offset[0],offset[1],offset[2])
-        # getBMXdata()
+        getBMXdata()
         time.sleep(0.2)
