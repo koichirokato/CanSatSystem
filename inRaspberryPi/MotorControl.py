@@ -69,25 +69,25 @@ def motorStop():
 def main(args=None):
     while True:
         print "forward"
-        forward(50)     # run motor forward
+        forward(10)     # run motor forward
         sleep(2)        # ... for 2 seconds
         motorStop()     # ... stop motor
         sleep(.25)      # delay between motor runs
 
         print "reverse"
-        reverse(50)     # run motor in reverse
+        reverse(10)     # run motor in reverse
         sleep(2)        # ... for 2 seoconds
         motorStop()     # ... stop motor
         sleep(.25)      # delay between motor runs
 
         print "left"
-        turnLeft(50)    # turn Left
+        turnLeft(10)    # turn Left
         sleep(2)        # ... for 2 seconds
         motorStop()     # ... stop motors
         sleep(.25)      # delay between motor runs
 
         print "right"
-        turnRight(50)   # turn Right
+        turnRight(10)   # turn Right
         sleep(2)        # ... for 2 seconds
         motorStop()     # ... stop motors
         sleep(2)        # delay between motor runs
