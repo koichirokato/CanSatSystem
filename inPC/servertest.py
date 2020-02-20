@@ -12,7 +12,6 @@ now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
 send_data_dict = {"time":now,"x":10,"y":10,"cansat id":1}
 send_data_json = json.dumps(send_data_dict)
 
-
 while True:
     recv_data = ''
     now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
