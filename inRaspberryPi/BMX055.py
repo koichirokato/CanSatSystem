@@ -220,23 +220,22 @@ def getBMXMag():
 def stopCheck():
     count = 10
     sleeptime = 1
+    stopcount = 0
     offset = initAcclData()
-    while():
+    while True:
         for i in range(count):
             x,y,z = getAcclData(offset[0],offset[1],offset[2])
-            x += x
-            y += y
-            z += z
-            time.sleep(sleeptime)
-        xAve = x/(count*sleeptime)
-        yAve = y/(count*sleeptime)
-        zAve = z/(count*sleeptime)
+            print x,y,z
+            if abs(x) <= 2 and abs(y) <= 2 and abs(z) <= 2:
+                stopcount += 1
+                time.sleep(sleeptime)
 
-        if abs(xAve) <= 5 and abs(yAve) <= 5 and zAve <= 1010 and 990<= zAve:
+        if stopcount >= count:
             print 'stop'
             break
         else:
             print 'moving'
+            stopcount = 0
             time.sleep(5)
 
 
