@@ -104,7 +104,7 @@ def motor(name, spd, sleeptime=1):
     motorStop()
     time.sleep(1)
 
-if __name__ == '__main__':
+def main():
     print "start at : " + str(datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
     
     print "initialize Accl Data"
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     
     while True:
         # 加速度を取得、パラシュートの切り離しに使う
-        acclData = getAcclData(offset[0],offset[1],offset[2])
+        xacclData,yacclData,zacclData = getAcclData(offset[0],offset[1],offset[2])
         
 
         print "######count : " + str(count)
@@ -156,3 +156,6 @@ if __name__ == '__main__':
             
             df_log.to_csv('CanSat_log/log.csv')
         time.sleep(5)
+
+if __name__ == '__main__':
+    main()
