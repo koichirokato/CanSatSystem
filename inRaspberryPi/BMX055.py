@@ -217,6 +217,29 @@ def getBMXMag():
     cansat_turning = 90-math.degrees(math.atan2(yMag,xMag))
     return cansat_turning
 
+def stopCheck():
+    count = 10
+    sleeptime = 1
+    offset = initAcclData()
+    while():
+        for i in range(count):
+            x,y,z = getAcclData(offset[0],offset[1],offset[2])
+            x += x
+            y += y
+            z += z
+            time.sleep(sleeptime)
+        xAve = x/(count*sleeptime)
+        yAve = y/(count*sleeptime)
+        zAve = z/(count*sleeptime)
+
+        if abs(xAve) <= 5 and abs(yAve) <= 5 and zAve <= 1010 and 990<= zAve:
+            print 'stop'
+            break
+        else:
+            print 'moving'
+            time.sleep(5)
+
+
 if __name__ == '__main__':
     # Output data to screen
     # bus.write_byte_data(0x13, 0x4B, 0x83)
@@ -225,6 +248,8 @@ if __name__ == '__main__':
     offset = initAcclData()
     time.sleep(1)
     print(offset)
+
+    stopCheck()
     while True:
         getAcclData(offset[0],offset[1],offset[2])
         getBMXdata()
